@@ -5,8 +5,10 @@
 #  earth. (It uses simple Euler's integration)
 #  TODO: Plot results of the trajectory ...
 #
+
 import math, sys, string
 import numpy as np
+import plot_orbit
 def getTrajectory(Mass, GMsun, positionAtPerihelion, velocityAtPerihelion):
   # initial conditions
   x0 = positionAtPerihelion # 10^6km     perihelion distance
@@ -32,6 +34,11 @@ def getTrajectory(Mass, GMsun, positionAtPerihelion, velocityAtPerihelion):
 
   counter =0
   dt = 1.0 # step in days
+  # arrays for plot
+  xlist = []
+  ylist = []
+  vxlist = []
+  vylist = []
 
   f = open('planetMoves2.dat','w')
   f.write('t [d],   x [10^6 km] ,  y[10^6 km], vx [10^6 km/d], vy[10^6 km/d], Energy\n')
@@ -48,13 +55,22 @@ def getTrajectory(Mass, GMsun, positionAtPerihelion, velocityAtPerihelion):
     y_next += vy_next * dt
 
     r2 = x_next * x_next + y_next * y_next
-    r3 = math.pow(r2,3./2.)
+    r3 = math.pow(r2, 3./2.)
+
+    xlist.append(x_next)
+    ylist.append(y_next)
+    vxlist.append(vx_next)
+    vylist.append(vy_next)
+
     kineticEnergy = 0.5 * Mass * (vx_next * vx_next + vy_next * vy_next )
     potentialEnergy =  - GMsun * Mass / math.sqrt(r2)
     Etotal = kineticEnergy + potentialEnergy
     counter += 1
 
   f.close()
+
+  plot_orbit.pathOrbit(xlist, ylist)
+
 
 
 

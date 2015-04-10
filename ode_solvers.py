@@ -6,8 +6,8 @@
 """
   Start to write methods to solve ode that
   can be re-used in several situations
-  Notation is based on the traditional from the
-  notation used for classical equations of motion:
+  Notation is based on the traditional one
+  used in classical mechanics equations of motion:
   (x  , y) : coordinates of the particle
   (vx , vy): velocity of the particle
 """
@@ -35,8 +35,6 @@ class ordinaryDiffEq1D:
     vx = np.array([vx0] * self.nsteps)
     dt = t[1] - t[0]
 
-    tNext = self.t0
-    counter = 1
     for i in xrange( self.nsteps - 1):
       vx[i + 1] = vx[i] + self.a(x[i], vx[i], t[i]) * dt
       x[i + 1] = x[i] + vx[i + 1] * dt
@@ -88,6 +86,25 @@ class ordinaryDiffEq2D:
     self.tf = finalTime
     self.nsteps = numberSteps
 
-  def printInitialConditions(self):
-     print ('x(t = t0) = %d' % self.x0)
+  def makeTimeGrid(self):
+    t = np.array([t0] * self.nsteps)
+    dt = (self.tf - self.t0) / self.nsteps
+    t[0] = self.t0
+    for i in range(1, self.nsteps):
+      t[i] = t[i - 1] + dt
+    return t
+
+  def euler(self):
+    x = np.array([x0] * self.nsteps)
+    y = np.array([y0] * self.nsteps)
+    vx = np.array([vx0] * self.nsteps)
+    vy = np.array([vy0] * self.nsteps)
+    dt = t[1] - t[0]
+    for i in xrange( self.nsteps - 1):
+      vx[i + 1] = vx[i] + self.ax(x[i], vx[i], t[i]) * dt
+      vy[i + 1] = vy[i] + self.ay(y[i], vy[i], t[i]) * dt
+      x[i + 1] = x[i] + vx[i + 1] * dt
+      y[i + 1] = y[i] + vy[i + 1] * dt
+    return x,y,vx,vy
+
 

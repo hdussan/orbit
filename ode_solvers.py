@@ -13,6 +13,18 @@
 """
 import math, sys, string
 import numpy as np
+
+def makeTimeGrid(initialTime, finalTime, numberSteps):
+    t0 = initialTime
+    tf = finalTime
+    nsteps = numberSteps
+    t = np.array([t0] * nsteps)
+    dt = (tf - t0) / nsteps
+    t[0] = t0
+    for i in range(1, nsteps):
+      t[i] = t[i - 1] + dt
+    return t
+
 class ordinaryDiffEq1D:
   def __init__(self, rhsFunction, initialX, initialVx, initialTime, finalTime, numberSteps):
     self.a = rhsFunction
@@ -22,17 +34,9 @@ class ordinaryDiffEq1D:
     self.tf = finalTime
     self.nsteps = numberSteps
 
-  def makeTImeGrid(self):
-    t = np.array([t0] * self.nsteps)
-    dt = (self.tf - self.t0) / self.nsteps
-    t[0] = self.t0
-    for i in range(1, self.nsteps):
-      t[i] = t[i - 1] + dt
-    return t
-
   def euler(self, t):
-    x = np.array([x0] * self.nsteps)
-    vx = np.array([vx0] * self.nsteps)
+    x = np.array([self.x0] * self.nsteps)
+    vx = np.array([self.vx0] * self.nsteps)
     dt = t[1] - t[0]
 
     for i in xrange( self.nsteps - 1):
@@ -41,8 +45,8 @@ class ordinaryDiffEq1D:
     return x,vx
 
   def rungeKutta2order(self, t):
-    x = np.array([x0] * self.nsteps)
-    vx = np.array([vx0] * self.nsteps)
+    x = np.array([self.x0] * self.nsteps)
+    vx = np.array([self.vx0] * self.nsteps)
     dt = t[1] - t[0]
     for i in xrange(self.nsteps - 1):
       vk1 = self.a(x[i], vx[i], t[i]) * dt
@@ -56,8 +60,8 @@ class ordinaryDiffEq1D:
     return x,vx
 
   def rungeKutta4order(self, t):
-    x = np.array([x0] * self.nsteps)
-    vx = np.array([vx0] * self.nsteps)
+    x = np.array([self.x0] * self.nsteps)
+    vx = np.array([self.vx0] * self.nsteps)
     dt = t[1] - t[0]
     for i in xrange(self.nsteps - 1):
       vk1 = self.a(x[i], vx[i], t[i]) * dt
@@ -74,37 +78,35 @@ class ordinaryDiffEq1D:
 
     return x,vx
 
+
 class ordinaryDiffEq2D:
-  def __init__(self, rhsFunctionX, rhFunctionY, initialX, initialY, initialVx, initialVy, initialTime, finalTime, numberSteps):
-    self.ax = rhsFunctionX
-    self.ay = rhsFunctionY
+  def __init__(self, rhsFunction, initialX, initialY, initialVx, initialVy, numberSteps):
+    #self.ax = rhsFunctionX
+    #self.ay = rhsFunctionY
+    self.acceleration = rhsFunction
     self.x0 = initialX
     self.y0 = initialY
     self.vx0 = initialVx
     self.vy0 = initialVy
-    self.t0 = initialTime
-    self.tf = finalTime
     self.nsteps = numberSteps
+  def printMembers(self):
+    print self.vx0, ", ", self.vy0
+    print self.x0,  ", ", self.y0
 
-  def makeTimeGrid(self):
-    t = np.array([t0] * self.nsteps)
-    dt = (self.tf - self.t0) / self.nsteps
-    t[0] = self.t0
-    for i in range(1, self.nsteps):
-      t[i] = t[i - 1] + dt
-    return t
 
-  def euler(self):
-    x = np.array([x0] * self.nsteps)
-    y = np.array([y0] * self.nsteps)
-    vx = np.array([vx0] * self.nsteps)
-    vy = np.array([vy0] * self.nsteps)
+  def euler(self, t):
+    x = np.array([self.x0] * self.nsteps)
+    y = np.array([self.y0] * self.nsteps)
+    vx = np.array([self.vx0] * self.nsteps)
+    vy = np.array([self.vy0] * self.nsteps)
     dt = t[1] - t[0]
     for i in xrange( self.nsteps - 1):
-      vx[i + 1] = vx[i] + self.ax(x[i], vx[i], t[i]) * dt
-      vy[i + 1] = vy[i] + self.ay(y[i], vy[i], t[i]) * dt
+      ax,ay = self.acceleration(x[i], y[i], vx[i], vy[i], t[i])
+      vx[i + 1] = vx[i] + ax * dt
+      vy[i + 1] = vy[i] + ay * dt
       x[i + 1] = x[i] + vx[i + 1] * dt
       y[i + 1] = y[i] + vy[i + 1] * dt
+
     return x,y,vx,vy
 
 

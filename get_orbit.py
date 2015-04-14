@@ -23,14 +23,13 @@
 import string,sys,math
 import aphelion
 import solve_trajectory
+import constants
 print 'Planetary motion programme'
 
 #  Mearth := mass of the earth /10^(24) kg
-#  GMsun := G \times Msun
 #  length unit = 10^6 km
 
 Mearth = 5.97       # 10^ 24 kg
-GMsun   = 9.9e2     # (10^6 km)^3 / day^2
 
 #
 #  Earth's Initial Conditions: x0, vx0, y0, vy0
@@ -40,9 +39,9 @@ x0 = 1.471e2  # 10^6km     perihelion distance
 
 vy0 = 2.6168  #10^6 km/day   Speed at the perihelion
 
-aphelion.solveAphelion(GMsun, x0, vy0)
+aphelion.solveAphelion( x0, vy0)
 
-solve_trajectory.getTrajectory(Mearth, GMsun, x0, vy0)
+solve_trajectory.getTrajectory(Mearth, x0, vy0)
 
 
 

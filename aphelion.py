@@ -20,7 +20,9 @@
 #
 import math
 import numpy as np
-def solveAphelion( GMsun, positionAtPerihelion, velocityAtPerihelion):
+import constants
+def solveAphelion( positionAtPerihelion, velocityAtPerihelion):
+  GMsun = constants.GMsun
   vAphelion = 0.
   orbitPeriod = 0.
   eccentricity = 0.

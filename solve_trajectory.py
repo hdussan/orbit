@@ -51,11 +51,15 @@ def getTrajectory(Mass, positionAtPerihelion, velocityAtPerihelion):
   numberSteps = 365
   tgrid = ode_solvers.makeTimeGrid(t0, tf, numberSteps)
   planetaryOrbit = ordinaryDiffEq2D(acceleration, x0, y0, vx0, vy0, numberSteps)
-  x,y,vx,vy = planetaryOrbit.euler(tgrid)
+
+  x,y,vx,vy = planetaryOrbit.rungeKutta4order(tgrid)
   energy = mechanicalEnergy(Mass, x, y, vx, vy)
 
-  plot_orbit.pathOrbit(x, y)
-  plot_orbit.energyCheck(energy, tgrid)
+  x2,y2,vx2,vy2 = planetaryOrbit.rungeKutta2order(tgrid)
+  energy2 = mechanicalEnergy(Mass, x2, y2, vx2, vy2)
+
+  plot_orbit.compareOrbits(x, y, x2, y2)
+  plot_orbit.energyCheckCompare(energy, energy2, tgrid)
 
 
 
